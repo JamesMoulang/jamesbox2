@@ -124,6 +124,6 @@ io.on('connection', function(socket) {
 		}
 	});
 });
-server.listen(3000, function() {
+server.listen(process.env.PORT || 3000, function() {
 	console.log("listening on port 3000");
 });
