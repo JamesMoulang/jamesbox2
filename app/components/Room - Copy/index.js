@@ -11,7 +11,6 @@ import container from '../visual/container';
 import { submitName } from '../../actions/User';
 import { receiveMessage, submitMessage } from '../../actions/Room';
 import Message from '../visual/Message';
-import Game from '../../game';
 
 function mapStateToProps(state) {
   return {
@@ -80,15 +79,11 @@ class RoomComponent extends Component {
 				});
 
 				this.setState({room});
-
-				var game = new Game();
 			}
 		}
-
-		// Now initialise canavs.
 	}
 
-	componentDidUpdate(prevProps) {
+	componentDidUpdate() {
 
 	}
 
@@ -143,18 +138,32 @@ class RoomComponent extends Component {
 					</div>
 				);
 			} else {
-				// Show game.
-				return <div style={{position: 'absolute', width: '100%', height: '100%'}}>
-					<div
-			        	ref="content" 
-			        	style={{
-				        	display: 'block', 
-				        	position: 'absolute', 
-				        	zIndex: 1,
-				        	width: '100%',
-				        	height: '100%'
-			        	}}
-			        />
+				// Show messages.
+				return <div style={{position: 'absolute', width: '100%', height: '100%', overflow: ''}}>
+					<div style={{zIndex: 2, position: 'fixed', bottom: '0%', width: '100%', height: '34px', overflow: '', backgroundColor: 'white', borderTop: '#000000'}}>
+						<input 
+							onKeyPress={this.handleKeyPress.bind(this, 'message')}
+							className="form-control"
+							type="text"
+							value={this.state.message}
+							onChange={this.handleChange.bind(this, 'message')}
+						/>
+					</div>
+					<div style={{zIndex: 1, position: 'fixed', width: '100%', height: 'calc(100% - 34px)', overflow: 'scroll'}}>
+						{
+							_.map(
+								_.sortBy(
+									this.props.messages,
+									(message) => {
+										return message.timestamp - date;
+									}
+								),
+								(message, index) => {
+									return <Message key={index} message={message}/>
+								}
+							)
+						}
+					</div>
 				</div>
 			}
 		}
